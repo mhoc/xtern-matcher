@@ -35,6 +35,15 @@ func LoadStudents(filename string) Students {
 	return ss
 }
 
+func (s Students) Find(name string) *Student {
+	for _, student := range s {
+		if student.Name == name {
+			return student
+		}
+	}
+	panic(fmt.Sprintf("no student found with name %v", name))
+}
+
 func (s Students) Validate() error {
 	studentMap := make(map[string]*Student)
 	for _, student := range s {

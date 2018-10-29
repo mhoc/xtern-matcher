@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -37,4 +38,13 @@ func LoadCompanies(filename string) Companies {
 		cs = append(cs, c)
 	}
 	return cs
+}
+
+func (c Companies) Find(companyName string) *Company {
+	for _, company := range c {
+		if company.Name == companyName {
+			return company
+		}
+	}
+	panic(fmt.Sprintf("no company found with name: %v", companyName))
 }

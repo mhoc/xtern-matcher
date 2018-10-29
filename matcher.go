@@ -2,51 +2,64 @@ package main
 
 func FindMatches(students Students, companies Companies) Matches {
 	var matches Matches
-	for _, student := range students {
 
-		// Iterate over each "placement" a company could have ranked a student, starting at 0
-		// 12 is just a magic number here; it represents the maximum ranking a company could have
-		// placed a student at.
-		for i := 0; i < 12; i++ {
-			companiesRankedStudentAtI := []*Company{}
-			for _, company := range companies {
-				if len(company.Students) > i && company.Students[i] == student.Name {
-					companiesRankedStudentAtI = append(companiesRankedStudentAtI, company)
+	// The core of the matching algorithm works by company rank; starting with rank 0, going until
+	// rank n, finding as many matches at each rank as possible. 12 is just a magic number here to
+	// represent the globally maximum number of ranks any company could have.
+	for rank := 0; rank < 12; rank++ {
+
+		// Assemble a list of students who were ranked at this rank by any company.
+		studentsAtThisRank := make(map[string][]*Company)
+		for _, company := range companies {
+			if len(company.Students) > rank {
+				studentName := company.Students[rank]
+				if _, in := studentsAtThisRank[studentName]; in {
+					studentsAtThisRank[studentName] = append(studentsAtThisRank[studentName], company)
+				} else {
+					studentsAtThisRank[studentName] = []*Company{company}
 				}
 			}
+		}
 
-			if len(companiesRankedStudentAtI) == 1 {
+		// Iterate over every student.
+		for studentName, companiesAtRank := range studentsAtThisRank {
+			student := students.Find(studentName)
 
-				// If only one company ranked the student at #i, and that company has room, assign the match.
-				matches = matches.Add(student, companiesRankedStudentAtI[0])
+			if len(companiesAtRank) == 1 {
+				// If only one company ranked this student at this rank, we assign the match.
+				company := companiesAtRank[0]
+				if matches.CompanyCanSupportMatch(company) && matches.FindByStudent(student) == nil {
+					matches = matches.Add(student, company)
+				}
+			} else if len(companiesAtRank) > 1 {
 
-			} else if len(companiesRankedStudentAtI) > 1 {
-
-				// If multiple companies ranked the student at #i, use the student's rankings to break the
-				// tie.
-				for _, studentCompanyRanking := range student.Companies {
-					for _, eligibleCompany := range companiesRankedStudentAtI {
-						if studentCompanyRanking == eligibleCompany.Name && matches.FindByStudent(student) == nil {
-							matches = matches.Add(student, eligibleCompany)
+				// If multiple companies want the student at this level, we resolve the match by using the
+				// student's preferences
+				for _, studentRankCompanyName := range student.Companies {
+					for _, companyAtRank := range companiesAtRank {
+						if studentRankCompanyName == companyAtRank.Name &&
+							matches.CompanyCanSupportMatch(companyAtRank) && matches.FindByStudent(student) == nil {
+							matches = matches.Add(student, companyAtRank)
 						}
 					}
 				}
 
-				// At this point, we can assume that the student hasn't even ranked the company. Too bad,
-				// you get matched anyway. Instead of using some consistent way to decide this, we just
-				// select the first company in the CSV. Hopefully this happens rarely.
-				if matches.FindByStudent(student) == nil {
-					matches = matches.Add(student, companiesRankedStudentAtI[0])
+				// At this point, it is possible that multiple companies ranked this student but the student
+				// didn't rank any of them; in this case, we just give them the first company that has
+				// availability.
+				for _, companyAtRank := range companiesAtRank {
+					if matches.CompanyCanSupportMatch(companyAtRank) && matches.FindByStudent(student) == nil {
+						matches = matches.Add(student, companyAtRank)
+					}
 				}
 
 			} else {
-
-				// If no one ranked the student at this rank, we skip this rank and move on to the next
-				// one
+				// No companies want the student at this rank; continue on to the next rank.
 				continue
-
 			}
 		}
+
 	}
+
 	return matches
 }
