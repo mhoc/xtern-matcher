@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"fmt"
@@ -45,6 +45,26 @@ func (m Matches) FindByStudent(student *Student) *Match {
 		}
 	}
 	return nil
+}
+
+/**
+ * GlobalFitness calculates the "accuracy" of the set of matches. We consider an ideal global match
+ * to mean that every company gets their first N picks, where N is the number of students they want.
+ * In reality, this is impossible to reach because of competition between companies, but we'd want
+ * to optimize it regardlesss.
+ *
+ * Lets say we have a ranking like C1(1): S1 S2 S3 S4
+ * The global fitnesses would look like:
+ *   S1:   1.00
+ *   S2:   0.75
+ *   S3:   0.50
+ *   S4:   0.25
+ *   none: 0.00
+ *
+ * Each match is calculated independently.
+ */
+func (m Matches) GlobalFitness() float64 {
+	return 1
 }
 
 func (m Matches) StudentHasMatch(student *Student) bool {

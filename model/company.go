@@ -1,8 +1,9 @@
-package main
+package model
 
 import (
 	"encoding/csv"
 	"fmt"
+	"math/rand"
 	"os"
 	"strconv"
 )
@@ -15,18 +16,24 @@ type Company struct {
 
 type Companies []*Company
 
-func LoadCompanies(filename string) Companies {
+func LoadCompanies(filename string) (Companies, error) {
 	cs := make([]*Company, 0)
 	f, err := os.Open(filename)
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 	reader := csv.NewReader(f)
 	content, err := reader.ReadAll()
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 	for _, row := range content {
 		c := &Company{}
 		c.Name = row[0]
 		numHiring, err := strconv.Atoi(row[1])
-		check(err)
+		if err != nil {
+			return nil, err
+		}
 		c.NumberHiring = numHiring
 		c.Students = []string{}
 		for _, studentName := range row[2:] {
@@ -37,7 +44,7 @@ func LoadCompanies(filename string) Companies {
 		}
 		cs = append(cs, c)
 	}
-	return cs
+	return cs, nil
 }
 
 func (c Companies) Find(companyName string) *Company {
@@ -47,4 +54,8 @@ func (c Companies) Find(companyName string) *Company {
 		}
 	}
 	panic(fmt.Sprintf("no company found with name: %v", companyName))
+}
+
+func (c Companies) Random() *Company {
+	return c[rand.Intn(len(c))]
 }

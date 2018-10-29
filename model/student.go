@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"encoding/csv"
@@ -13,13 +13,17 @@ type Student struct {
 
 type Students []*Student
 
-func LoadStudents(filename string) Students {
+func LoadStudents(filename string) (Students, error) {
 	ss := make([]*Student, 0)
 	f, err := os.Open(filename)
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 	reader := csv.NewReader(f)
 	content, err := reader.ReadAll()
-	check(err)
+	if err != nil {
+		return nil, err
+	}
 	for _, row := range content {
 		s := &Student{}
 		s.Name = row[0]
@@ -32,7 +36,7 @@ func LoadStudents(filename string) Students {
 		}
 		ss = append(ss, s)
 	}
-	return ss
+	return ss, nil
 }
 
 func (s Students) Find(name string) *Student {
