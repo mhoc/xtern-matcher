@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/csv"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -105,6 +106,34 @@ func (m Matches) WriteByStudent() {
 	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
 	for _, match := range m {
 		fmt.Fprintf(w, "%v\t%v\n", match.Student.Name, match.Company.Name)
+	}
+	w.Flush()
+}
+
+func (m Matches) WriteCSVByCompany() {
+	byCompany := make(map[string][]*Match)
+	for _, match := range m {
+		if _, in := byCompany[match.Company.Name]; in {
+			byCompany[match.Company.Name] = append(byCompany[match.Company.Name], match)
+		} else {
+			byCompany[match.Company.Name] = []*Match{match}
+		}
+	}
+	w := csv.NewWriter(os.Stdout)
+	for companyName, matches := range byCompany {
+		line := []string{companyName}
+		for _, match := range matches {
+			line = append(line, match.Student.Name)
+		}
+		w.Write(line)
+	}
+	w.Flush()
+}
+
+func (m Matches) WriteCSVByStudent() {
+	w := csv.NewWriter(os.Stdout)
+	for _, match := range m {
+		w.Write([]string{match.Student.Name, match.Company.Name})
 	}
 	w.Flush()
 }

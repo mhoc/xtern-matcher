@@ -61,7 +61,13 @@ func main() {
 			panic("pivot not recognized")
 		}
 	} else if *output == "csv" {
-		panic("csv output not implemented yet")
+		if *pivot == "students" {
+			matches.WriteCSVByStudent()
+		} else if *pivot == "companies" {
+			matches.WriteCSVByCompany()
+		} else {
+			panic("pivot not recognized")
+		}
 	} else {
 		panic("output format not recognized")
 	}
