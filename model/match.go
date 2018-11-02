@@ -12,6 +12,17 @@ type Match struct {
 	Student *Student
 }
 
+func NewMatch(c *Company, s *Student) *Match {
+	return &Match{
+		Company: c,
+		Student: s,
+	}
+}
+
+func (m Match) Equals(m2 Match) bool {
+	return m.Company.Equals(*m2.Company) && m.Student.Equals(*m2.Student)
+}
+
 type Matches []*Match
 
 func (m Matches) Add(student *Student, company *Company) Matches {
@@ -27,7 +38,7 @@ func (m Matches) Add(student *Student, company *Company) Matches {
 	})
 }
 
-/** CompanyCanSupportMatch returns true if a company has room to match */
+// CompanyCanSupportMatch returns true if a company has room to match
 func (m Matches) CompanyCanSupportMatch(company *Company) bool {
 	nMatches := 0
 	for _, match := range m {
@@ -38,7 +49,25 @@ func (m Matches) CompanyCanSupportMatch(company *Company) bool {
 	return nMatches < company.NumberHiring
 }
 
-/** Finds the student's match in the list of matches, or nil if they haven't been matched yet */
+// Equals returns true of two sets of matches are exactly equal to one-another.
+func (m Matches) Equals(m2 Matches) bool {
+	if len(m) != len(m2) {
+		return false
+	}
+	for _, match := range m {
+		match2 := m2.FindByStudent(match.Student)
+		if match2 == nil {
+			return false
+		}
+		if !match.Equals(*match2) {
+			return false
+		}
+	}
+	return true
+}
+
+// FindByStudent finds the student's match in the list of matches, or nil if they haven't been
+// matched yet
 func (m Matches) FindByStudent(student *Student) *Match {
 	for _, match := range m {
 		if match.Student.Name == student.Name {
@@ -48,26 +77,7 @@ func (m Matches) FindByStudent(student *Student) *Match {
 	return nil
 }
 
-/**
- * GlobalFitness calculates the "accuracy" of the set of matches. We consider an ideal global match
- * to mean that every company gets their first N picks, where N is the number of students they want.
- * In reality, this is impossible to reach because of competition between companies, but we'd want
- * to optimize it regardlesss.
- *
- * Lets say we have a ranking like C1(1): S1 S2 S3 S4
- * The global fitnesses would look like:
- *   S1:   1.00
- *   S2:   0.75
- *   S3:   0.50
- *   S4:   0.25
- *   none: 0.00
- *
- * Each match is calculated independently.
- */
-func (m Matches) GlobalFitness() float64 {
-	return 1
-}
-
+// StudentHasMatch returns true if the given student has a match already assigned
 func (m Matches) StudentHasMatch(student *Student) bool {
 	for _, match := range m {
 		if match.Student.Name == student.Name {

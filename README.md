@@ -20,3 +20,4 @@ And like this for students:
 {studentName},{companyNameRank0},...,{companyNameRankN}
 ```
 
+Do not specify headers in either input file.
