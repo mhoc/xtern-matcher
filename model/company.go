@@ -57,7 +57,7 @@ func LoadCompanies(filename string) (Companies, error) {
 		c.NumberHiring = numHiring
 		c.Students = []string{}
 		for _, studentName := range row[2:] {
-			if studentName == "Choose Your Candidate" || studentName == "" {
+			if studentName == "Choose Your Candidate" || studentName == "First Name, Last Name" || studentName == "" {
 				continue
 			}
 			c.Students = append(c.Students, studentName)
