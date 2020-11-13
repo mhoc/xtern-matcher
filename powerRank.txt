@@ -1,0 +1,16 @@
+for comp in companies:
+  # set starting power == reverse value of preference.  
+  # pref 1 == 7 power etc
+  comp.currentPower = 7
+
+# collect students by ranking
+# do mike's matching here of students ranked one
+  # inject df pull
+
+# compare student prefs to make decision
+  if (comp1.power == comp1.power)
+    # take student pref
+  elif (comp1.power > comp2.power)
+    # add the match for the winning comp
+    comp1.matches.append(student)
+    comp1.power = 0
