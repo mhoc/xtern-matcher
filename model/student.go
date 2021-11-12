@@ -4,6 +4,9 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"strings"
+
+	"unicode"
 )
 
 type Student struct {
@@ -51,6 +54,9 @@ func LoadStudents(filename string) (Students, error) {
 		s.Name = row[0]
 		s.Companies = []string{}
 		for _, companyName := range row[1:] {
+			companyName = strings.TrimFunc(companyName, func(r rune) bool {
+				return !unicode.IsGraphic(r)
+			})
 			if companyName == "Choose a Company" ||
 				companyName == "" ||
 				companyName == "Choose Your Company/Department" {

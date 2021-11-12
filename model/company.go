@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"os"
 	"strconv"
+	"strings"
+	"unicode"
 )
 
 type Company struct {
@@ -57,8 +59,10 @@ func LoadCompanies(filename string) (Companies, error) {
 		c.NumberHiring = numHiring
 		c.Students = []string{}
 		for _, studentName := range row[2:] {
+			studentName = strings.TrimFunc(studentName, func(r rune) bool {
+				return !unicode.IsGraphic(r)
+			})
 			if studentName == "Choose Your Candidate" ||
-				studentName == "\xEF\xBB\xBFChoose Your Candidate" ||
 				studentName == "First Name, Last Name" ||
 				studentName == "Last Name, First Name" ||
 				studentName == "" ||
