@@ -51,7 +51,9 @@ func LoadStudents(filename string) (Students, error) {
 		s.Name = row[0]
 		s.Companies = []string{}
 		for _, companyName := range row[1:] {
-			if companyName == "Choose a Company" || companyName == "" {
+			if companyName == "Choose a Company" ||
+				companyName == "" ||
+				companyName == "Choose Your Company/Department" {
 				continue
 			}
 			s.Companies = append(s.Companies, companyName)
@@ -67,7 +69,7 @@ func (s Students) Find(name string) *Student {
 			return student
 		}
 	}
-	panic(fmt.Sprintf("no student found with name %v", name))
+	panic(fmt.Sprintf("no student found with name '%v'", name))
 }
 
 func (s Students) Validate() error {
