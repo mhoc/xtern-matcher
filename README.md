@@ -2,7 +2,7 @@
 
 ## Running
 
-[Pre-compiled binaries are available for for all major operating systems.](https://github.com/mhoc/xtern-matcher/releases/latest)
+[Pre-compiled binaries are available for all major operating systems.](https://github.com/mhoc/xtern-matcher/releases/latest)
 
 After downloading:
 
