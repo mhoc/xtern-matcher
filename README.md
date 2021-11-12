@@ -2,13 +2,13 @@
 
 ## Running
 
-A pre-compiled binary is available for MacOS [at the following link](https://github.com/mhoc/xtern-matcher/releases/download/v1.0.0/xternmatcher-darwin_x8664) (or, click on Releases above).
+[Pre-compiled binaries are available for for all major operating systems.](https://github.com/mhoc/xtern-matcher/releases/latest)
 
 After downloading:
 
 ```
-$ chmod +x xternmatcher-darwin_x8664
-$ mv xternmatcher-darwin_x8664 xternmatcher
+$ chmod +x DOWNLOADED_FILE
+$ mv DOWNLOAD_FILE xternmatcher
 $ ./xternmatcher -h
 ```
 
