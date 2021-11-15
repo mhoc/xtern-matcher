@@ -1,0 +1,72 @@
+name: PublishRelease
+on: 
+  push:
+    tags:
+      - "v*"
+jobs:
+  Run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - run: go build -o xternmatcher_linux_amd64
+        env:
+          GOOS: linux
+          GOARCH: amd64
+      - run: go build -o xternmatcher_macos_amd64
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+      - run: go build -o xternmatcher_macos_arm64
+        env:
+          GOOS: darwin
+          GOARCH: arm64
+      - run: go build -o xternmatcher_windows_amd64
+        env:
+          GOOS: windows
+          GOARCH: amd64
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: publish linux amd64 binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xternmatcher_linux_amd64
+          asset_name: xternmatcher_linux_amd64
+          asset_content_type: application/octet-stream
+      - name: publish macos amd64 binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xternmatcher_macos_amd64
+          asset_name: xternmatcher_macos_amd64
+          asset_content_type: application/octet-stream
+      - name: publish macos arm64 binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xternmatcher_macos_arm64
+          asset_name: xternmatcher_macos_arm64
+          asset_content_type: application/octet-stream
+      - name: publish windows amd64 binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xternmatcher_windows_amd64
+          asset_name: xternmatcher_windows_amd64
+          asset_content_type: application/octet-stream
