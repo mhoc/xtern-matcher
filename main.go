@@ -10,12 +10,6 @@ import (
 	"github.com/mhoc/xtern-matcher/model"
 )
 
-func check(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func init() {
 	rand.Seed(time.Now().Unix())
 }
