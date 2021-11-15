@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/mhoc/xtern-matcher/loader"
 	"github.com/mhoc/xtern-matcher/matcher"
 	"github.com/mhoc/xtern-matcher/model"
 )
@@ -28,11 +29,16 @@ func main() {
 		return
 	}
 
-	companies, err := model.LoadCompanies(*inCompanies)
+	loader := loader.Get("csv", map[string]string{
+		"companiesFile": *inCompanies,
+		"studentsFile":  *inStudents,
+	})
+
+	companies, err := loader.Companies()
 	if err != nil {
 		panic(err)
 	}
-	students, err := model.LoadStudents(*inStudents)
+	students, err := loader.Students()
 	if err != nil {
 		panic(err)
 	}
@@ -45,10 +51,6 @@ func main() {
 	switch *alg {
 	case "simple":
 		matches = matcher.Simple(students, companies)
-	case "brute":
-		matches = matcher.Brute(students, companies)
-	case "evolve":
-		matches = matcher.Evolve(students, companies)
 	default:
 		panic("alg not recognized")
 	}
