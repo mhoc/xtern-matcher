@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -25,7 +26,13 @@ func main() {
 	inStudents := flag.String("in-students", "", "input csv file with student data")
 	output := flag.String("out", "pretty", "output format: pretty or csv")
 	pivot := flag.String("pivot", "companies", "output pivot: companies or students")
+	version := flag.Bool("v", false, "output binary version")
 	flag.Parse()
+
+	if *version {
+		fmt.Printf("v1.3.0\n")
+		return
+	}
 
 	companies, err := model.LoadCompanies(*inCompanies)
 	if err != nil {
