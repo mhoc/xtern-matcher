@@ -34,7 +34,7 @@ func TestMatchesAddStudentTaken(t *testing.T) {
 
 func TestMatchesAddStudentCompanyFull(t *testing.T) {
 	defer func() {
-		recover()
+		_ = recover()
 	}()
 	c1 := NewCompany("c1", 1, []string{"s1", "s2"})
 	s1 := NewStudent("s1", []string{"c1"})

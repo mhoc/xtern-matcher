@@ -55,7 +55,7 @@ func TestStudentFindExists(t *testing.T) {
 
 func TestStudentFindNoExists(t *testing.T) {
 	defer func() {
-		recover()
+		_ = recover()
 	}()
 	s1 := NewStudent("s1", []string{"c1"})
 	s2 := NewStudent("s2", []string{"c2"})
