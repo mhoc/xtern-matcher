@@ -17,11 +17,7 @@ func Simple(students model.Students, companies model.Companies) model.Matches {
 		for _, company := range companies {
 			if len(company.Students) > rank {
 				studentName := company.Students[rank]
-				if _, in := studentsAtThisRank[studentName]; in {
-					studentsAtThisRank[studentName] = append(studentsAtThisRank[studentName], company)
-				} else {
-					studentsAtThisRank[studentName] = []*model.Company{company}
-				}
+				studentsAtThisRank[studentName] = append(studentsAtThisRank[studentName], company)
 			}
 		}
 

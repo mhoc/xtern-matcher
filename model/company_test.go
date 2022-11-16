@@ -63,7 +63,7 @@ func TestCompaniesFindExists(t *testing.T) {
 
 func TestCompaniesFindNoExists(t *testing.T) {
 	defer func() {
-		recover()
+		_ = recover()
 	}()
 	c1 := NewCompany("c1", 1, []string{"s1"})
 	c2 := NewCompany("c2", 1, []string{"s4"})

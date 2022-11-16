@@ -91,11 +91,7 @@ func (m Matches) WriteByCompany() {
 	fmt.Printf("by company\n")
 	byCompany := make(map[string][]*Match)
 	for _, match := range m {
-		if _, in := byCompany[match.Company.Name]; in {
-			byCompany[match.Company.Name] = append(byCompany[match.Company.Name], match)
-		} else {
-			byCompany[match.Company.Name] = []*Match{match}
-		}
+		byCompany[match.Company.Name] = append(byCompany[match.Company.Name], match)
 	}
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 8, 0, '\t', tabwriter.DiscardEmptyColumns)
@@ -123,11 +119,7 @@ func (m Matches) WriteByStudent() {
 func (m Matches) WriteCSVByCompany() {
 	byCompany := make(map[string][]*Match)
 	for _, match := range m {
-		if _, in := byCompany[match.Company.Name]; in {
-			byCompany[match.Company.Name] = append(byCompany[match.Company.Name], match)
-		} else {
-			byCompany[match.Company.Name] = []*Match{match}
-		}
+		byCompany[match.Company.Name] = append(byCompany[match.Company.Name], match)
 	}
 	w := csv.NewWriter(os.Stdout)
 	for companyName, matches := range byCompany {
@@ -135,7 +127,7 @@ func (m Matches) WriteCSVByCompany() {
 		for _, match := range matches {
 			line = append(line, match.Student.Name)
 		}
-		w.Write(line)
+		_ = w.Write(line)
 	}
 	w.Flush()
 }
@@ -143,7 +135,7 @@ func (m Matches) WriteCSVByCompany() {
 func (m Matches) WriteCSVByStudent() {
 	w := csv.NewWriter(os.Stdout)
 	for _, match := range m {
-		w.Write([]string{match.Student.Name, match.Company.Name})
+		_ = w.Write([]string{match.Student.Name, match.Company.Name})
 	}
 	w.Flush()
 }

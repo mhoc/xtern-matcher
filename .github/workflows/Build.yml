@@ -1,12 +1,27 @@
 name: Build
 on: [push]
 jobs:
-  Run:
+  Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
       - uses: golangci/golangci-lint-action@v3
+  Vet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 
+      - uses: actions/setup-go@v3
       - run: go vet
+  Test:
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
       - run: go test ./...
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
       - run: go build

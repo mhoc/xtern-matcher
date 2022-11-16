@@ -12,12 +12,12 @@ func TestMatchesAddSuccessful(t *testing.T) {
 		},
 	})
 	s2 := NewStudent("s2", []string{"c1"})
-	matches = matches.Add(s2, c1)
+	matches.Add(s2, c1)
 }
 
 func TestMatchesAddStudentTaken(t *testing.T) {
 	defer func() {
-		recover()
+		_ = recover()
 	}()
 	c1 := NewCompany("c1", 2, []string{"s1"})
 	c2 := NewCompany("c2", 2, []string{"s1"})
@@ -28,7 +28,7 @@ func TestMatchesAddStudentTaken(t *testing.T) {
 			Student: s1,
 		},
 	})
-	matches = matches.Add(s1, c2)
+	matches.Add(s1, c2)
 	t.Fatalf("expected to fatally panic on s1-c2 match")
 }
 
@@ -45,7 +45,7 @@ func TestMatchesAddStudentCompanyFull(t *testing.T) {
 			Student: s1,
 		},
 	})
-	matches = matches.Add(s2, c1)
+	matches.Add(s2, c1)
 	t.Fatalf("expected to fatally panic on s2-c1 match")
 }
 
