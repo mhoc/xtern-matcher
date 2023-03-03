@@ -63,13 +63,12 @@ func TestStudentFindExists(t *testing.T) {
 }
 
 func TestStudentFindNoExists(t *testing.T) {
-	defer func() {
-		_ = recover()
-	}()
 	s1 := NewStudent("s1", []string{"c1"})
 	s2 := NewStudent("s2", []string{"c2"})
 	s3 := NewStudent("s3", []string{"c3"})
 	students := Students([]*Student{s1, s2, s3})
-	students.Find("s4")
-	t.Fatalf("expected find to fatally panic on s4")
+	_, err := students.Find("s4")
+	if err == nil {
+		t.Fatalf("expected find to error on s4")
+	}
 }
