@@ -77,6 +77,24 @@ func (m Matches) FindByStudent(student *Student) *Match {
 	return nil
 }
 
+// FreeAgents filters the full student list provided by students who are not represented in this
+// list of matches.
+func (m Matches) FreeAgents(fullStudentList Students) Students {
+	var unmatched Students
+	for _, student := range fullStudentList {
+		matched := false
+		for _, match := range m {
+			if match.Student.Equals(*student) {
+				matched = true
+			}
+		}
+		if !matched {
+			unmatched = append(unmatched, student)
+		}
+	}
+	return unmatched
+}
+
 // StudentHasMatch returns true if the given student has a match already assigned
 func (m Matches) StudentHasMatch(student *Student) bool {
 	for _, match := range m {
@@ -116,6 +134,17 @@ func (m Matches) WriteByStudent() {
 	w.Flush()
 }
 
+func (m Matches) WriteFreeAgents(fullStudentList Students) {
+	fmt.Printf("free agents\n")
+	w := new(tabwriter.Writer)
+	w.Init(os.Stdout, 0, 8, 0, '\t', 0)
+	freeAgents := m.FreeAgents(fullStudentList)
+	for _, freeAgent := range freeAgents {
+		fmt.Fprintf(w, "%v\n", freeAgent.Name)
+	}
+	w.Flush()
+}
+
 func (m Matches) WriteCSVByCompany() {
 	byCompany := make(map[string][]*Match)
 	for _, match := range m {
@@ -136,6 +165,15 @@ func (m Matches) WriteCSVByStudent() {
 	w := csv.NewWriter(os.Stdout)
 	for _, match := range m {
 		_ = w.Write([]string{match.Student.Name, match.Company.Name})
+	}
+	w.Flush()
+}
+
+func (m Matches) WriteCSVFreeAgents(fullStudentList Students) {
+	w := csv.NewWriter(os.Stdout)
+	freeAgents := m.FreeAgents(fullStudentList)
+	for _, freeAgent := range freeAgents {
+		_ = w.Write([]string{freeAgent.Name})
 	}
 	w.Flush()
 }

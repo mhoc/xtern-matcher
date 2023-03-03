@@ -20,12 +20,12 @@ func main() {
 	inCompanies := flag.String("in-companies", "", "input csv file with company data")
 	inStudents := flag.String("in-students", "", "input csv file with student data")
 	output := flag.String("out", "pretty", "output format: pretty or csv")
-	pivot := flag.String("pivot", "companies", "output pivot: companies or students")
+	pivot := flag.String("pivot", "companies", "output pivot: companies, students, freeagents")
 	version := flag.Bool("v", false, "output binary version")
 	flag.Parse()
 
 	if *version {
-		fmt.Printf("v1.3.0\n")
+		fmt.Printf("v1.4.0\n")
 		return
 	}
 
@@ -60,6 +60,8 @@ func main() {
 			matches.WriteByStudent()
 		} else if *pivot == "companies" {
 			matches.WriteByCompany()
+		} else if *pivot == "freeagents" {
+			matches.WriteFreeAgents(students)
 		} else {
 			panic("pivot not recognized")
 		}
@@ -68,6 +70,8 @@ func main() {
 			matches.WriteCSVByStudent()
 		} else if *pivot == "companies" {
 			matches.WriteCSVByCompany()
+		} else if *pivot == "freeagents" {
+			matches.WriteCSVFreeAgents(students)
 		} else {
 			panic("pivot not recognized")
 		}
