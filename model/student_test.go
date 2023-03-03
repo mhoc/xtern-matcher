@@ -39,15 +39,24 @@ func TestStudentFindExists(t *testing.T) {
 	s2 := NewStudent("s2", []string{"c2"})
 	s3 := NewStudent("s3", []string{"c3"})
 	students := Students([]*Student{s1, s2, s3})
-	s1f := students.Find("s1")
+	s1f, err := students.Find("s1")
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
 	if !s1.Equals(*s1f) {
 		t.Fatalf("expected find to return s1")
 	}
-	s2f := students.Find("s2")
+	s2f, err := students.Find("s2")
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
 	if !s2.Equals(*s2f) {
 		t.Fatalf("expected find to return s2")
 	}
-	s3f := students.Find("s3")
+	s3f, err := students.Find("s3")
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
 	if !s3.Equals(*s3f) {
 		t.Fatalf("expected find to return s3")
 	}
