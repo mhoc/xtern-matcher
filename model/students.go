@@ -4,13 +4,13 @@ import "fmt"
 
 type Students []*Student
 
-func (s Students) Find(name string) *Student {
+func (s Students) Find(name string) (*Student, error) {
 	for _, student := range s {
 		if student.Name == name {
-			return student
+			return student, nil
 		}
 	}
-	panic(fmt.Sprintf("no student found with name '%v'", name))
+	return nil, fmt.Errorf("no student found with name '%v'", name)
 }
 
 func (s Students) Validate() error {

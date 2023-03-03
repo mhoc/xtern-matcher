@@ -1,11 +1,14 @@
 package matcher
 
 import (
+	"fmt"
+
 	"github.com/mhoc/xtern-matcher/model"
 )
 
 func Simple(students model.Students, companies model.Companies) model.Matches {
 	var matches model.Matches
+	errs := []error{}
 
 	// The core of the matching algorithm works by company rank; starting with rank 0, going until
 	// rank n, finding as many matches at each rank as possible. 12 is just a magic number here to
@@ -23,7 +26,11 @@ func Simple(students model.Students, companies model.Companies) model.Matches {
 
 		// Iterate over every student.
 		for studentName, companiesAtRank := range studentsAtThisRank {
-			student := students.Find(studentName)
+			student, err := students.Find(studentName)
+			if err != nil {
+				errs = append(errs, err)
+				continue
+			}
 
 			if len(companiesAtRank) == 1 {
 				// If only one company ranked this student at this rank, we assign the match.
@@ -59,6 +66,14 @@ func Simple(students model.Students, companies model.Companies) model.Matches {
 			}
 		}
 
+	}
+
+	if len(errs) > 0 {
+		fmt.Printf("ERRORS:\n")
+		for _, err := range errs {
+			fmt.Printf("%v\n", err.Error())
+		}
+		panic("")
 	}
 
 	return matches
